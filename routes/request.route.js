@@ -1,18 +1,26 @@
 
 import express from "express";
 import RequestTB from "../models/request.js";
+import axios from "axios";
 
 
 const router = express.Router();
 
 // Create a new request
 router.post('/', async (req, res) => {
-    const { title, description, userID , email } = req.body;
+    const { title, description, userID, email } = req.body;
 
     try {
-        const newRequest = new RequestTB({ title, description, userID , email });
-        newRequest.stats = "Pending" 
+        const newRequest = new RequestTB({ title, description, userID, email });
+        newRequest.stats = "Pending"
         await newRequest.save();
+        try {
+            await axios.post(`http://localhost:3000/notification/create/request/${newRequest._id}/${newRequest.email}`);
+            console.log('Notification sent successfully');
+        } catch (notificationError) {
+            console.error('Failed to send notification:', notificationError.message);
+            return res.status(500).json({ message: 'Request created but notification failed.' });
+        }
         res.status(201).json(newRequest);
     } catch (error) {
         res.status(400).json({ message: error.message });
@@ -86,6 +94,13 @@ router.put('/update-status/:id', async (req, res) => {
         );
 
         if (!updatedRequest) return res.status(404).json({ message: 'Request not found' });
+        try {
+            await axios.post(`http://localhost:3000/notification/newauth/${updatedRequest.email}`);
+            console.log('Notification sent successfully');
+        } catch (notificationError) {
+            console.error('Failed to send notification:', notificationError.message);
+            return res.status(500).json({ message: 'Request created but notification failed.' });
+        }
         res.status(200).json(updatedRequest);
     } catch (error) {
         res.status(400).json({ message: error.message });
