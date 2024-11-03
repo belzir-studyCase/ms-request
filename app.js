@@ -3,7 +3,11 @@ import requestRouter from './routes/request.route.js';
 import bodyParser from 'body-parser';
 const app = express();
 import connectToMongoDB from './database/connection.js';
+import { swaggerUi, swaggerDocs } from './docsconfig/swaggerConfig.js';
 connectToMongoDB();
+
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use(express.json());
 // Set default route for '/'
 
