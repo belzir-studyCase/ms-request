@@ -96,7 +96,7 @@ router.put('/update-status/:id', async (req, res) => {
 
         if (!updatedRequest) return res.status(404).json({ message: 'Request not found' });
         try {
-            await axios.post(`http://localhost:3000/notification/newauth/${updatedRequest.email}`);
+            await axios.post(`http://localhost:3000/notification/update/request/state/${updatedRequest._id}`);
             console.log('Notification sent successfully');
         } catch (notificationError) {
             console.error('Failed to send notification:', notificationError.message);
