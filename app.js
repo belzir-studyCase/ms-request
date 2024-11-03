@@ -1,16 +1,11 @@
 import express from "express";
 import requestRouter from './routes/request.route.js';
-import bodyParser from 'body-parser';
 const app = express();
 import connectToMongoDB from './database/connection.js';
 import { swaggerUi, swaggerDocs } from './docsconfig/swaggerConfig.js';
 connectToMongoDB();
-
-
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use(express.json());
-// Set default route for '/'
-
 app.use("/", requestRouter);
 
 app.get('/test', (req, res) => {
@@ -20,6 +15,4 @@ app.get('/test', (req, res) => {
 app.listen(3002, () => {
   console.log(`Server is running at http://localhost:3002`);
 });
-
-// Export the app instance
 export default app;

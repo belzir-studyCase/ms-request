@@ -1,11 +1,7 @@
-// swaggerConfig.js
+
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
-
-
-
-// Swagger configuration
 const swaggerOptions = {
     swaggerDefinition: {
         openapi: "3.0.0",
@@ -20,7 +16,7 @@ const swaggerOptions = {
             },
         ],
     },
-    apis: ["./routes/*.js"], // Adjust path if needed
+    apis: ["./routes/*.js"], 
   };
   
   const swaggerDocs = swaggerJsDoc(swaggerOptions);
