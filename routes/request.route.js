@@ -14,8 +14,9 @@ router.post('/', async (req, res) => {
         const newRequest = new RequestTB({ title, description, userID, email });
         newRequest.stats = "Pending"
         await newRequest.save();
+        const response = await axios.get(`http://localhost:3000/account/admin`);
         try {
-            await axios.post(`http://localhost:3000/notification/create/request/${newRequest._id}/${newRequest.email}`);
+            await axios.post(`http://localhost:3000/notification/create/request/${newRequest._id}/${response.data.email}`);
             console.log('Notification sent successfully');
         } catch (notificationError) {
             console.error('Failed to send notification:', notificationError.message);
