@@ -21,7 +21,7 @@ const requestSchema = new mongoose.Schema({
         required: true
     }
 }, {
-    timestamps: true,  // Adds createdAt and updatedAt timestamps
+    timestamps: true,  
 });
 
 const RequestTB = mongoose.model('requests', requestSchema);
