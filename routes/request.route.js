@@ -37,8 +37,8 @@ router.post('/', async (req, res) => {
     try {
         const newRequest = new RequestTB({ title, description, userID, email, stats: "Pending" });
         await newRequest.save();
-        const response = await axios.get(`http://localhost:3000/account/admin`);
-        await axios.post(`http://localhost:3000/notification/create/request/${newRequest._id}/${response.data.email}`);
+        const response = await axios.get(`https://gateway-9pxx.onrender.com/account/admin`);
+        await axios.post(`https://gateway-9pxx.onrender.com/notification/create/request/${newRequest._id}/${response.data.email}`);
         res.status(201).json(newRequest);
     } catch (error) {
         res.status(400).json({ message: error.message });
@@ -215,7 +215,7 @@ router.put('/update-status/:id', async (req, res) => {
             { new: true, runValidators: true }
         );
         if (!updatedRequest) return res.status(404).json({ message: 'Request not found' });
-        await axios.post(`http://localhost:3000/notification/update/request/state/${updatedRequest._id}`);
+        await axios.post(`https://gateway-9pxx.onrender.com/notification/update/request/state/${updatedRequest._id}`);
         res.status(200).json(updatedRequest);
     } catch (error) {
         res.status(400).json({ message: error.message });
