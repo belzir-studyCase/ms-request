@@ -1,6 +1,7 @@
 import express from "express";
 import RequestTB from "../models/request.js";
 import axios from "axios";
+import { createRequest,getRequestbyEmail, getRequestbyID } from "../controller/request.controller.js";
 
 const router = express.Router();
 
@@ -36,10 +37,8 @@ router.post('/', async (req, res) => {
     const { title, description, userID, email } = req.body;
     try {
         const newRequest = new RequestTB({ title, description, userID, email, stats: "Pending" });
-        await newRequest.save();
-        const response = await axios.get(`https://gateway-9pxx.onrender.com/account/admin`);
-        await axios.post(`https://gateway-9pxx.onrender.com/notification/create/request/${newRequest._id}/${response.data.email}`);
-        res.status(201).json(newRequest);
+        const data = await createRequest(newRequest);
+        res.status(201).json(data);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -65,11 +64,14 @@ router.post('/', async (req, res) => {
  *       500:
  *         description: Server error
  */
+
 router.get('/user/:email', async (req, res) => {
     const { email } = req.params;
     try {
-        const requests = await RequestTB.find({ email });
-        if (requests.length === 0) return res.status(404).json({ message: 'No requests found for this email' });
+        const requests = await getRequestbyEmail(email);
+        if (requests.length === 0) {
+            return res.status(404).json({ message: 'No requests found for this email' });
+        }
         res.status(200).json(requests);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -119,7 +121,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const request = await RequestTB.findById(id);
+        const request = await getRequestbyID(id);
         if (!request) return res.status(404).json({ message: 'Request not found' });
         res.status(200).json(request);
     } catch (error) {
